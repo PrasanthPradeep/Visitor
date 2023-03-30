@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Take Photo and Send by Email</title>
+</head>
+<body>
+    <button id="take-photo-btn">Take Photo and Send</button>
+
+    <script>
+        var takePhotoBtn = document.getElementById('take-photo-btn');
+
+        takePhotoBtn.addEventListener('click', function() {
+            // Request access to the user's camera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    // Create a video element to show the camera stream
+                    var video = document.createElement('video');
+                    video.srcObject = stream;
+                    video.play();
+
+                    // Create a canvas element to capture the photo
+                    var canvas = document.createElement('canvas');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                    // Convert the canvas data to a data URI and send it to the server
+                    var dataURI = canvas.toDataURL();
+                    sendPhoto(dataURI);
+
+                    // Clean up
+                    video.pause();
+                    video.srcObject = null;
+                    stream.getTracks()[0].stop();
+                })
+                .catch(function(error) {
+                    console.error('Error accessing camera:', error);
+                });
+        });
+
+        function sendPhoto(dataURI) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'sendphoto.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('Photo sent successfully');
+                    alert('Photo sent successfully!');
+                }
+            };
+            xhr.send('photo=' + encodeURIComponent(dataURI));
+        }
+    </script>
+</body>
+</html>

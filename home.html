@@ -12,6 +12,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="take-photo.js"></script>
   
+  <script language="javascript">
   // Check if the browser supports the camera API
 if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   // Get the video element
@@ -52,7 +53,7 @@ if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     });
   });
 }
-
+  </script>
   <?php
 if(isset($_POST['image'])) {
   $image_data = $_POST['image'];
